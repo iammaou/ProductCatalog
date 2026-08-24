@@ -23,8 +23,7 @@ namespace WebAPI.Controllers
             return Ok(categories);
         }
 
-        [HttpGet]
-        [Route("{id:guid}")]
+        [HttpGet("{id:guid}")]
         public async Task<IActionResult> GetCategory(Guid id)
         {
             var category = await service.GetCategoryAsync(id);
@@ -33,11 +32,27 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddCategory(AddProductCategoryDTO addProductCategoryDTO)
+        public async Task<IActionResult> AddCategory(ProductCategoryDTO addProductCategoryDTO)
         {
             var category = await service.AddCategoryAsync(addProductCategoryDTO);
 
             return Ok(category);
+        }
+
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateCategory(Guid id, ProductCategoryDTO productCategoryDTO)
+        {
+            var category = await service.UpdateCategoryAsync(id, productCategoryDTO);
+
+            return category is null ? NotFound() : Ok(category);
+        }
+
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeleteCategory(Guid id)
+        {
+            var category = await service.RemoveCategoryAsync(id);
+
+            return category is null ? NotFound() : Ok();
         }
     }
 }
