@@ -5,7 +5,7 @@ using Service.DTO;
 using Service.Entities;
 
 namespace Service.Services;
- public interface IProductService
+public interface IProductService
 {
     Task<PagedResult<ProductDTO>> GetProductsAsync(ProductQueryParameters query);
 }
@@ -56,7 +56,7 @@ public class ProductService
             _ => productsQuery.OrderBy(p => p.Id)
         };
 
-        var TotalCount = await productsQuery.CountAsync();
+        var totalCount = await productsQuery.CountAsync();
 
         var pageNumber = Math.Max(query.PageNumber, 1);
         var pageSize = Math.Clamp(query.PageSize, 1, 100);
@@ -79,7 +79,7 @@ public class ProductService
         return new PagedResult<ProductDTO>
         {
             Items = items,
-            TotalCount = TotalCount,
+            TotalCount = totalCount,
             PageNumber = query.PageNumber,
             PageSize = query.PageSize
         };
@@ -98,7 +98,7 @@ public class ProductService
             throw new ArgumentException("Category does not exist");
         }
 
-        var ProductEntity = new Product()
+        var productEntity = new Product()
         {
             Name = productDTO.Name,
             Price = productDTO.Price,
@@ -108,10 +108,10 @@ public class ProductService
             CategoryId = productDTO.CategoryId
         };
 
-        dbContext.Products.Add(ProductEntity);
+        dbContext.Products.Add(productEntity);
         await dbContext.SaveChangesAsync();
 
-        return ProductEntity;
+        return productEntity;
     }
 
     public async Task<Product?> RemoveProductAsync(Guid id)
@@ -138,14 +138,14 @@ public class ProductService
             return null;
         }
 
-        product.Name = productDTO.Name ?? product.Name;
+        product.Name = string.IsNullOrWhiteSpace(productDTO.Name) ? product.Name : productDTO.Name;
         product.Price = productDTO.Price ?? product.Price;
         product.StockQuantity = productDTO.StockQuantity ?? product.StockQuantity;
         product.IsActive = productDTO.IsActive ?? product.IsActive;
         product.CategoryId = productDTO.CategoryId ?? product.CategoryId;
 
         await dbContext.SaveChangesAsync();
-
+        
         return product;
     }
 }

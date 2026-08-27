@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Options;
 using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.Services;
@@ -10,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+builder.Services.AddHealthChecks();
 
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), sql => sql.EnableRetryOnFailure()));
 builder.Services.AddScoped<ProductCategoryService>();
@@ -38,5 +38,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapControllers();
+
+app.MapHealthChecks("/health");
 
 app.Run();
