@@ -13,4 +13,6 @@ public class Product
 
     public Guid CategoryId {get;set;}
     public ProductCategory Category {get;set;} = null!;
+
+    public byte[] RowVersion {get;set;} = [];
 }

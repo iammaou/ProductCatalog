@@ -9,7 +9,7 @@ namespace Service.Services;
 {
     Task<PagedResult<ProductDTO>> GetProductsAsync(ProductQueryParameters query);
 }
-public class ProductService : IProductService
+public class ProductService
 {
     private readonly ApplicationDbContext dbContext;
 
@@ -58,15 +58,20 @@ public class ProductService : IProductService
 
         var TotalCount = await productsQuery.CountAsync();
 
+        var pageNumber = Math.Max(query.PageNumber, 1);
+        var pageSize = Math.Clamp(query.PageSize, 1, 100);
+
         var items = await productsQuery
-            .Skip((query.PageNumber - 1) * query.PageSize)
-            .Take(query.PageSize)
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .Select(p => new ProductDTO
             {
+                Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
                 StockQuantity = p.StockQuantity,
                 IsActive = p.IsActive,
+                CreatedAt = p.CreatedAt,
                 CategoryId = p.CategoryId
             })
             .ToListAsync();
@@ -83,17 +88,23 @@ public class ProductService : IProductService
 
     public async Task<Product?> GetProductAsync(Guid id)
     {
-        return await dbContext.Products.FindAsync(id);
+        return await dbContext.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
     }
 
-    public async Task<Product> AddCategoryAsync(ProductDTO productDTO)
+    public async Task<Product> AddProductAsync(ProductDTO productDTO)
     {
+        if(!await dbContext.ProductCategories.AnyAsync(c => c.Id == productDTO.CategoryId))
+        {
+            throw new ArgumentException("Category does not exist");
+        }
+
         var ProductEntity = new Product()
         {
             Name = productDTO.Name,
             Price = productDTO.Price,
             StockQuantity = productDTO.StockQuantity,
             IsActive = productDTO.IsActive,
+            CreatedAt = DateTime.UtcNow,
             CategoryId = productDTO.CategoryId
         };
 
@@ -118,7 +129,7 @@ public class ProductService : IProductService
         return product;
     }
 
-    public async Task<Product?> UpdateCategoryAsync(Guid id, UpdateProductDTO productDTO)
+    public async Task<Product?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO)
     {
         var product = await dbContext.Products.FindAsync(id);
 
@@ -136,10 +147,5 @@ public class ProductService : IProductService
         await dbContext.SaveChangesAsync();
 
         return product;
-    }
-
-    public Task<PagedResult<ProductDTO>> GetProductsAsync(ProductQueryParameters query)
-    {
-        throw new NotImplementedException();
     }
 }

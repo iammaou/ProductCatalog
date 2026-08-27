@@ -27,14 +27,14 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetProduct(Guid id)
         {
             var result = await service.GetProductAsync(id);
-            return Ok(result);
+            return result is null ? NotFound() : Ok(new ProductDTO { Id = result.Id, Name = result.Name, Price = result.Price, IsActive = result.IsActive, StockQuantity = result.StockQuantity, CreatedAt = result.CreatedAt, CategoryId = result.CategoryId});
         }
 
         [HttpPost]
         public async Task<IActionResult> AddProduct(ProductDTO productDTO)
         {
-            var result = await service.AddCategoryAsync(productDTO);
-            return Ok(result);
+            var result = await service.AddProductAsync(productDTO);
+            return CreatedAtAction(nameof(GetProduct), new { id = result.Id}, result);
         }
 
         [HttpDelete("{id:guid}")]
@@ -42,15 +42,15 @@ namespace WebAPI.Controllers
         {
             var result = await service.RemoveProductAsync(id);
 
-            return Ok();
+            return result is null ? NotFound() : Ok();
         }
 
         [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateProduct(Guid id, UpdateProductDTO productDTO)
         {
-            var result = await service.UpdateCategoryAsync(id, productDTO);
+            var result = await service.UpdateProductAsync(id, productDTO);
 
-            return Ok(result);
+            return result is null ? NotFound() : Ok(result);
         }
     }
 }

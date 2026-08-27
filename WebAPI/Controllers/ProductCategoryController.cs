@@ -20,6 +20,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetAllCategories()
         {
             var categories = await service.GetAllCategoriesAsync();
+            
             return Ok(categories);
         }
 
@@ -36,7 +37,7 @@ namespace WebAPI.Controllers
         {
             var category = await service.AddCategoryAsync(addProductCategoryDTO);
 
-            return Ok(category);
+            return CreatedAtAction(nameof(GetCategory), new {id = category.Id}, category);
         }
 
         [HttpPut("{id:guid}")]

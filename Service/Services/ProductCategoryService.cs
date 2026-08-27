@@ -16,17 +16,38 @@ public class ProductCategoryService
         this.dbContext = dbContext;
     }
 
-    public async Task<List<ProductCategory>> GetAllCategoriesAsync()
+    public async Task<List<ProductCategoryDTO>> GetAllCategoriesAsync()
     {
-        return await dbContext.ProductCategories.ToListAsync();
+        var categories = await dbContext.ProductCategories.AsNoTracking().ToListAsync();
+
+        var categoriesDTO = categories.Select(c => new ProductCategoryDTO
+        {
+            Name = c.Name,
+            Description = c.Description
+        }).ToList();
+
+        return categoriesDTO;
     }
 
-    public async Task<ProductCategory?> GetCategoryAsync(Guid id)
+    public async Task<ProductCategoryDTO?> GetCategoryAsync(Guid id)
     {
-        return await dbContext.ProductCategories.FindAsync(id);
+        var category = await dbContext.ProductCategories.FindAsync(id);
+
+        if(category is null)
+        {
+            return null;
+        }
+
+        var categoriesDTO = new ProductCategoryDTO
+        {
+            Name = category.Name,
+            Description = category.Description
+        };
+
+        return categoriesDTO;
     }
 
-    public async Task<ProductCategory> AddCategoryAsync(ProductCategoryDTO productCategoryDTO)
+    public async Task<AddProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO)
     {
         var ProductCategoryEntity = new ProductCategory()
         {
@@ -34,17 +55,24 @@ public class ProductCategoryService
             Description = productCategoryDTO.Description
         };
 
+        var newProductCategoryDTO = new AddProductCategoryDTO
+        {
+            Id = ProductCategoryEntity.Id,
+            Name = ProductCategoryEntity.Name,
+            Description = ProductCategoryEntity.Description
+        };
+
         dbContext.ProductCategories.Add(ProductCategoryEntity);
         await dbContext.SaveChangesAsync();
 
-        return ProductCategoryEntity;
+        return newProductCategoryDTO;
     }
 
-    public async Task<ProductCategory?> RemoveCategoryAsync(Guid id)
+    public async Task<bool?> RemoveCategoryAsync(Guid id)
     {
         var category = await dbContext.ProductCategories.FindAsync(id);
 
-        if(category is null)
+        if(category is null || await dbContext.Products.AnyAsync(p => p.CategoryId == id))
         {
             return null;   
         }
@@ -52,10 +80,10 @@ public class ProductCategoryService
         dbContext.ProductCategories.Remove(category);
         await dbContext.SaveChangesAsync();
 
-        return category;
+        return true;
     }
 
-    public async Task<ProductCategory?> UpdateCategoryAsync(Guid id, ProductCategoryDTO productCategoryDTO)
+    public async Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, ProductCategoryDTO productCategoryDTO)
     {
         var productCategory = await dbContext.ProductCategories.FindAsync(id);
 
@@ -69,6 +97,12 @@ public class ProductCategoryService
 
         await dbContext.SaveChangesAsync();
 
-        return productCategory;
+        var newProductCategoryDTO = new ProductCategoryDTO
+        {
+            Name = productCategory.Name,
+            Description = productCategory.Description
+        };
+
+        return newProductCategoryDTO;
     }
 }
