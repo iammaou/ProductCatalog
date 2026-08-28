@@ -11,7 +11,14 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("Default"), sql => sql.EnableRetryOnFailure()));
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(
+    builder.Configuration.GetConnectionString("Default"), 
+    sqlOptions =>
+    {
+        sqlOptions.MigrationsAssembly("Service");
+        sqlOptions.EnableRetryOnFailure();
+    }
+));
 builder.Services.AddScoped<ProductCategoryService>();
 builder.Services.AddScoped<ProductService>();
 

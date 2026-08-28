@@ -21,6 +21,7 @@ public class ProductCategoryService
 
         var categoriesDTO = categories.Select(c => new ProductCategoryDTO
         {
+            Id = c.Id,
             Name = c.Name,
             Description = c.Description
         }).ToList();
@@ -39,6 +40,7 @@ public class ProductCategoryService
 
         var categoriesDTO = new ProductCategoryDTO
         {
+            Id = category.Id,
             Name = category.Name,
             Description = category.Description
         };
@@ -46,7 +48,7 @@ public class ProductCategoryService
         return categoriesDTO;
     }
 
-    public async Task<AddProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO)
+    public async Task<ProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO)
     {
         var ProductCategoryEntity = new ProductCategory()
         {
@@ -54,15 +56,15 @@ public class ProductCategoryService
             Description = productCategoryDTO.Description
         };
 
-        var newProductCategoryDTO = new AddProductCategoryDTO
+        dbContext.ProductCategories.Add(ProductCategoryEntity);
+        await dbContext.SaveChangesAsync();
+
+        var newProductCategoryDTO = new ProductCategoryDTO
         {
             Id = ProductCategoryEntity.Id,
             Name = ProductCategoryEntity.Name,
             Description = ProductCategoryEntity.Description
         };
-
-        dbContext.ProductCategories.Add(ProductCategoryEntity);
-        await dbContext.SaveChangesAsync();
 
         return newProductCategoryDTO;
     }
@@ -98,6 +100,7 @@ public class ProductCategoryService
 
         var newProductCategoryDTO = new ProductCategoryDTO
         {
+            Id = productCategory.Id,
             Name = productCategory.Name,
             Description = productCategory.Description
         };
