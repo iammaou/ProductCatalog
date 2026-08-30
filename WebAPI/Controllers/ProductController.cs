@@ -6,14 +6,9 @@ namespace WebAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ProductController : ControllerBase
+    public class ProductController(IProductService service) : ControllerBase
     {
-        private readonly ProductService service;
-
-        public ProductController(ProductService service)
-        {
-            this.service = service;
-        }
+        private readonly IProductService service = service;
 
         [HttpGet]
         public async Task<IActionResult> GetAllProducts([FromQuery] ProductQueryParameters query)

@@ -6,7 +6,15 @@ using Service.Entities;
 
 namespace Service.Services;
 
-public class ProductCategoryService
+public interface IProductCategoryService
+{
+    Task<List<ProductCategoryDTO>> GetAllCategoriesAsync();
+    Task<ProductCategoryDTO?> GetCategoryAsync(Guid id);
+    Task<ProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO);
+    Task<bool?> RemoveCategoryAsync(Guid id);
+    Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, ProductCategoryDTO productCategoryDTO);
+}
+public class ProductCategoryService : IProductCategoryService
 {
     private readonly ApplicationDbContext dbContext;
 

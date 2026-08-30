@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.Services;
+using WebAPI.Handlers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,10 +20,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlSer
         sqlOptions.EnableRetryOnFailure();
     }
 ));
-builder.Services.AddScoped<ProductCategoryService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IProductCategoryService, ProductCategoryService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 var app = builder.Build();
+
+app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -40,9 +47,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseAuthentication();
+
+app.UseAuthorization();
 
 app.MapControllers();
 

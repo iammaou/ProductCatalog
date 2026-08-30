@@ -7,9 +7,13 @@ using Service.Entities;
 namespace Service.Services;
 public interface IProductService
 {
-    Task<PagedResult<ProductDTO>> GetProductsAsync(ProductQueryParameters query);
+    Task<PagedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParameters query);
+    Task<Product?> GetProductAsync(Guid id);
+    Task<Product> AddProductAsync(ProductDTO productDTO);
+    Task<Product?> RemoveProductAsync(Guid id);
+    Task<Product?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO);
 }
-public class ProductService
+public class ProductService : IProductService
 {
     private readonly ApplicationDbContext dbContext;
 
