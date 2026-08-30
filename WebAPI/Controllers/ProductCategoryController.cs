@@ -34,7 +34,7 @@ namespace WebAPI.Controllers
             return CreatedAtAction(nameof(GetCategory), new {id = category.Id}, category);
         }
 
-        [HttpPut("{id:guid}")]
+        [HttpPatch("{id:guid}")]
         public async Task<IActionResult> UpdateCategory(Guid id, ProductCategoryDTO productCategoryDTO)
         {
             var category = await service.UpdateCategoryAsync(id, productCategoryDTO);

@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.DTO;
@@ -20,6 +21,9 @@ public class ProductService(ApplicationDbContext dbContext) : IProductService
 
     public async Task<PagedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParameters query)
     {
+
+        query.Validate();
+
         IQueryable<Product> productsQuery = dbContext.Products.AsNoTracking();
 
         if (query.CategoryId.HasValue)
@@ -142,6 +146,17 @@ public class ProductService(ApplicationDbContext dbContext) : IProductService
         if(product is null)
         {
             return null;
+        }
+
+        if (productDTO.CategoryId.HasValue)
+        {
+            var productCategoryExists = await dbContext.ProductCategories
+                .AnyAsync(c => c.Id == productDTO.CategoryId.Value);
+
+            if (!productCategoryExists)
+            {
+                throw new ArgumentException("Category does not exist");
+            }
         }
 
         product.Name = string.IsNullOrWhiteSpace(productDTO.Name) ? product.Name : productDTO.Name;
