@@ -47,7 +47,13 @@ namespace WebAPI.Controllers
         {
             var category = await service.RemoveCategoryAsync(id);
 
-            return category is null ? NotFound() : Ok();
+            return category switch
+            {
+                ProductCategoryDeleteResult.NotFound => NotFound(),
+                ProductCategoryDeleteResult.hasProducts => Conflict("Cannot delete category that has products."),
+                ProductCategoryDeleteResult.Success => NoContent(),
+                _ => StatusCode(500)
+            };
         }
     }
 }

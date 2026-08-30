@@ -21,7 +21,7 @@ namespace WebAPI.Controllers
         public async Task<IActionResult> GetProduct(Guid id)
         {
             var result = await service.GetProductAsync(id);
-            return result is null ? NotFound() : Ok(new ProductDTO { Id = result.Id, Name = result.Name, Price = result.Price, IsActive = result.IsActive, StockQuantity = result.StockQuantity, CreatedAt = result.CreatedAt, CategoryId = result.CategoryId});
+            return result is null ? NotFound() : Ok(result);
         }
 
         [HttpPost]
@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
         {
             var result = await service.RemoveProductAsync(id);
 
-            return result is null ? NotFound() : Ok();
+            return result is null ? NotFound() : NoContent();
         }
 
         [HttpPut("{id:guid}")]

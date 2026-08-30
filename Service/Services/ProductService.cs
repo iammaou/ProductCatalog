@@ -3,25 +3,20 @@ using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.DTO;
 using Service.Entities;
+using Service.Mappers;
 
 namespace Service.Services;
 public interface IProductService
 {
     Task<PagedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParameters query);
-    Task<Product?> GetProductAsync(Guid id);
-    Task<Product> AddProductAsync(ProductDTO productDTO);
-    Task<Product?> RemoveProductAsync(Guid id);
-    Task<Product?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO);
+    Task<ProductDTO?> GetProductAsync(Guid id);
+    Task<ProductDTO> AddProductAsync(ProductDTO productDTO);
+    Task<bool?> RemoveProductAsync(Guid id);
+    Task<ProductDTO?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO);
 }
-public class ProductService : IProductService
+public class ProductService(ApplicationDbContext dbContext) : IProductService
 {
-    private readonly ApplicationDbContext dbContext;
-
-
-    public ProductService(ApplicationDbContext dbContext)
-    {
-        this.dbContext = dbContext;
-    }
+    private readonly ApplicationDbContext dbContext = dbContext;
 
     public async Task<PagedResult<ProductDTO>> GetAllProductsAsync(ProductQueryParameters query)
     {
@@ -90,12 +85,19 @@ public class ProductService : IProductService
     }
     
 
-    public async Task<Product?> GetProductAsync(Guid id)
+    public async Task<ProductDTO?> GetProductAsync(Guid id)
     {
-        return await dbContext.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+        var product = await dbContext.Products.AsNoTracking().FirstOrDefaultAsync(p => p.Id == id);
+
+        if(product is null)
+        {
+            return null;
+        }
+
+        return ProductMappers.ToDTO(product);
     }
 
-    public async Task<Product> AddProductAsync(ProductDTO productDTO)
+    public async Task<ProductDTO> AddProductAsync(ProductDTO productDTO)
     {
         if(!await dbContext.ProductCategories.AnyAsync(c => c.Id == productDTO.CategoryId))
         {
@@ -115,10 +117,10 @@ public class ProductService : IProductService
         dbContext.Products.Add(productEntity);
         await dbContext.SaveChangesAsync();
 
-        return productEntity;
+        return ProductMappers.ToDTO(productEntity);
     }
 
-    public async Task<Product?> RemoveProductAsync(Guid id)
+    public async Task<bool?> RemoveProductAsync(Guid id) 
     {
         var product = await dbContext.Products.FindAsync(id);
 
@@ -130,10 +132,10 @@ public class ProductService : IProductService
         dbContext.Products.Remove(product);
         await dbContext.SaveChangesAsync();
 
-        return product;
+        return true;
     }
 
-    public async Task<Product?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO)
+    public async Task<ProductDTO?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO)
     {
         var product = await dbContext.Products.FindAsync(id);
 
@@ -150,6 +152,6 @@ public class ProductService : IProductService
 
         await dbContext.SaveChangesAsync();
         
-        return product;
+        return ProductMappers.ToDTO(product);
     }
 }
