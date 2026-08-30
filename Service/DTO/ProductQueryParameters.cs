@@ -23,6 +23,8 @@ public class ProductQueryParameters
      [Range(0, int.MaxValue, ErrorMessage = "Stock quantity must be greater than or equal to 0")]
     public int? StockQuantity {get;set;}
 
+    public bool? IsInStock {get;set;}
+
     private string? _sortBy;
     public string? SortBy
     {
@@ -45,6 +47,23 @@ public class ProductQueryParameters
         if (MinPrice.HasValue && MaxPrice.HasValue && MinPrice > MaxPrice)
         {
             throw new ArgumentException("MinPrice cannot be greater than MaxPrice");
+        }
+
+        if (IsInStock.HasValue && StockQuantity.HasValue)
+        {
+            if (IsInStock.Value == true && StockQuantity.Value == 0)
+            {
+                throw new ArgumentException(
+                    "Cannot filter by 'in stock' (stock > 0) and exact stock quantity of 0 simultaneously"
+                );
+            }
+            
+            if (IsInStock.Value == false && StockQuantity.Value > 0)
+            {
+                throw new ArgumentException(
+                    "Cannot filter by 'out of stock' (stock = 0) and exact stock quantity greater than 0 simultaneously"
+                );
+            }
         }
     }
 }

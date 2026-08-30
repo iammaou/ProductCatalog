@@ -46,10 +46,25 @@ public class ProductService(ApplicationDbContext dbContext) : IProductService
             productsQuery = productsQuery.Where(p => p.IsActive == query.IsActive.Value);
         }
 
-        if (query.StockQuantity.HasValue)
+        if(query.IsInStock.HasValue && query.StockQuantity.HasValue)
         {
             productsQuery = productsQuery.Where(p => p.StockQuantity == query.StockQuantity.Value);
+        } 
+        else if (query.IsInStock.HasValue)
+        {
+            if (query.IsInStock.Value)
+            {
+                productsQuery = productsQuery.Where(p => p.StockQuantity > 0);
+            }
+            else
+            {
+                productsQuery = productsQuery.Where(p => p.StockQuantity == 0);
+            }
         }
+        else if (query.StockQuantity.HasValue)
+    {
+        productsQuery = productsQuery.Where(p => p.StockQuantity == query.StockQuantity.Value);
+    }
 
         productsQuery = query.SortBy?.ToLower() switch
         {
