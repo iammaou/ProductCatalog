@@ -10,7 +10,7 @@ namespace Service.Services;
 public enum ProductCategoryDeleteResult
 {
     NotFound,
-    hasProducts,
+    HasProducts,
     Success
 }
 
@@ -20,7 +20,7 @@ public interface IProductCategoryService
     Task<ProductCategoryDTO?> GetCategoryAsync(Guid id);
     Task<ProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO);
     Task<ProductCategoryDeleteResult> RemoveCategoryAsync(Guid id);
-    Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, ProductCategoryDTO productCategoryDTO);
+    Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, UpdateProductCategoryDTO updateProductCategoryDTO);
 }
 public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCategoryService
 {
@@ -37,7 +37,9 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
 
     public async Task<ProductCategoryDTO?> GetCategoryAsync(Guid id)
     {
-        var category = await dbContext.ProductCategories.FindAsync(id);
+        var category = await dbContext.ProductCategories
+            .AsNoTracking()
+            .FirstOrDefaultAsync(c => c.Id == id);
 
         if(category is null)
         {
@@ -63,18 +65,6 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
 
     public async Task<ProductCategoryDeleteResult> RemoveCategoryAsync(Guid id)
     {
-        // var category = await dbContext.ProductCategories.FindAsync(id);
-
-        // if(category is null || await dbContext.Products.AnyAsync(p => p.CategoryId == id))
-        // {
-        //     return null;   
-        // }
-
-        // dbContext.ProductCategories.Remove(category);
-        // await dbContext.SaveChangesAsync();
-
-        // return true;
-
         var category = await dbContext.ProductCategories
             .Include(c => c.Products)  // Load related products
             .FirstOrDefaultAsync(c => c.Id == id);
@@ -84,9 +74,9 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
             return ProductCategoryDeleteResult.NotFound;
         }
 
-        if (category.Products.Any())
+        if (category.Products.Count != 0)
         {
-            return ProductCategoryDeleteResult.hasProducts;
+            return ProductCategoryDeleteResult.HasProducts;
         }
 
         dbContext.ProductCategories.Remove(category);
@@ -94,7 +84,7 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
         return ProductCategoryDeleteResult.Success;
     }
 
-    public async Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, ProductCategoryDTO productCategoryDTO)
+    public async Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, UpdateProductCategoryDTO productCategoryDTO)
     {
         var productCategory = await dbContext.ProductCategories.FindAsync(id);
 

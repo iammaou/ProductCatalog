@@ -35,9 +35,9 @@ namespace WebAPI.Controllers
         }
 
         [HttpPatch("{id:guid}")]
-        public async Task<IActionResult> UpdateCategory(Guid id, ProductCategoryDTO productCategoryDTO)
+        public async Task<IActionResult> UpdateCategory(Guid id, UpdateProductCategoryDTO updateProductCategoryDTO)
         {
-            var category = await service.UpdateCategoryAsync(id, productCategoryDTO);
+            var category = await service.UpdateCategoryAsync(id, updateProductCategoryDTO);
 
             return category is null ? NotFound() : Ok(category);
         }
@@ -50,9 +50,8 @@ namespace WebAPI.Controllers
             return category switch
             {
                 ProductCategoryDeleteResult.NotFound => NotFound(),
-                ProductCategoryDeleteResult.hasProducts => Conflict("Cannot delete category that has products."),
+                ProductCategoryDeleteResult.HasProducts => Conflict("Cannot delete category that has products."),
                 ProductCategoryDeleteResult.Success => NoContent(),
-                _ => StatusCode(500)
             };
         }
     }

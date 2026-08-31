@@ -29,4 +29,15 @@ public static class ProductCategoryMappers
             Description = productCategoryDTO.Description
         };
     }
+
+    public static ProductCategoryDTO UpdateToDTO(this UpdateProductCategoryDTO updateProductCategoryDTO)
+    {
+        ArgumentNullException.ThrowIfNull(updateProductCategoryDTO);
+
+        return new ProductCategoryDTO
+        {
+            Name = updateProductCategoryDTO.Name,
+            Description = updateProductCategoryDTO.Description
+        };
+    }
 }

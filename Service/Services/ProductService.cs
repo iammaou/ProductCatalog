@@ -98,8 +98,8 @@ public class ProductService(ApplicationDbContext dbContext) : IProductService
         {
             Items = items,
             TotalCount = totalCount,
-            PageNumber = query.PageNumber,
-            PageSize = query.PageSize
+            PageNumber = pageNumber,
+            PageSize = pageSize
         };
     }
     

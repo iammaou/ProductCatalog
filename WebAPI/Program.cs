@@ -46,7 +46,6 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
-builder.Services.AddProblemDetails();
 
 var app = builder.Build();
 
@@ -56,14 +55,7 @@ app.UseExceptionHandler();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
-}
-
-if (app.Environment.IsDevelopment())
-{
     app.UseDeveloperExceptionPage();
-} else
-{
-    app.UseExceptionHandler("/error");
 }
 
 app.UseHttpsRedirection();
