@@ -68,4 +68,11 @@ app.MapControllers();
 
 app.MapHealthChecks("/health");
 
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    await dbContext.Database.MigrateAsync();
+    await DbSeeder.SeedAsync(dbContext);
+}
+
 app.Run();
