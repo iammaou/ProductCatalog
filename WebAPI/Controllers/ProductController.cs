@@ -39,8 +39,8 @@ namespace WebAPI.Controllers
             return result is null ? NotFound() : NoContent();
         }
 
-        [HttpPatch("{id:guid}")]
-        public async Task<IActionResult> UpdateProduct(Guid id, UpdateProductDTO productDTO)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateProduct(Guid id, ProductDTO productDTO)
         {
             var result = await service.UpdateProductAsync(id, productDTO);
 

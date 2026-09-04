@@ -20,7 +20,7 @@ public interface IProductCategoryService
     Task<ProductCategoryDTO?> GetCategoryAsync(Guid id);
     Task<ProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO);
     Task<ProductCategoryDeleteResult> RemoveCategoryAsync(Guid id);
-    Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, UpdateProductCategoryDTO updateProductCategoryDTO);
+    Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, ProductCategoryDTO updateProductCategoryDTO);
 }
 public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCategoryService
 {
@@ -84,7 +84,7 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
         return ProductCategoryDeleteResult.Success;
     }
 
-    public async Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, UpdateProductCategoryDTO productCategoryDTO)
+    public async Task<ProductCategoryDTO?> UpdateCategoryAsync(Guid id, ProductCategoryDTO productCategoryDTO)
     {
         var productCategory = await dbContext.ProductCategories.FindAsync(id);
 

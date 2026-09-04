@@ -34,8 +34,8 @@ namespace WebAPI.Controllers
             return CreatedAtAction(nameof(GetCategory), new {id = category.Id}, category);
         }
 
-        [HttpPatch("{id:guid}")]
-        public async Task<IActionResult> UpdateCategory(Guid id, UpdateProductCategoryDTO updateProductCategoryDTO)
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdateCategory(Guid id, ProductCategoryDTO updateProductCategoryDTO)
         {
             var category = await service.UpdateCategoryAsync(id, updateProductCategoryDTO);
 
@@ -52,6 +52,7 @@ namespace WebAPI.Controllers
                 ProductCategoryDeleteResult.NotFound => NotFound(),
                 ProductCategoryDeleteResult.HasProducts => Conflict("Cannot delete category that has products."),
                 ProductCategoryDeleteResult.Success => NoContent(),
+                _ => throw new InvalidOperationException($"Unexpected")
             };
         }
     }

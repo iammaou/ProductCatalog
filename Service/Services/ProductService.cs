@@ -13,7 +13,7 @@ public interface IProductService
     Task<ProductDTO?> GetProductAsync(Guid id);
     Task<ProductDTO> AddProductAsync(ProductDTO productDTO);
     Task<bool?> RemoveProductAsync(Guid id);
-    Task<ProductDTO?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO);
+    Task<ProductDTO?> UpdateProductAsync(Guid id, ProductDTO productDTO);
 }
 public class ProductService(ApplicationDbContext dbContext) : IProductService
 {
@@ -154,7 +154,7 @@ public class ProductService(ApplicationDbContext dbContext) : IProductService
         return true;
     }
 
-    public async Task<ProductDTO?> UpdateProductAsync(Guid id, UpdateProductDTO productDTO)
+    public async Task<ProductDTO?> UpdateProductAsync(Guid id, ProductDTO productDTO)
     {
         var product = await dbContext.Products.FindAsync(id);
 
@@ -163,22 +163,16 @@ public class ProductService(ApplicationDbContext dbContext) : IProductService
             return null;
         }
 
-        if (productDTO.CategoryId.HasValue)
+        if(productDTO.Name is null)
         {
-            var productCategoryExists = await dbContext.ProductCategories
-                .AnyAsync(c => c.Id == productDTO.CategoryId.Value);
-
-            if (!productCategoryExists)
-            {
-                throw new ArgumentException("Category does not exist");
-            }
+            throw new ArgumentException("Name is required when updating");
         }
 
-        product.Name = string.IsNullOrWhiteSpace(productDTO.Name) ? product.Name : productDTO.Name;
-        product.Price = productDTO.Price ?? product.Price;
-        product.StockQuantity = productDTO.StockQuantity ?? product.StockQuantity;
-        product.IsActive = productDTO.IsActive ?? product.IsActive;
-        product.CategoryId = productDTO.CategoryId ?? product.CategoryId;
+        product.Name = productDTO.Name;
+        product.Price = productDTO.Price;
+        product.StockQuantity = productDTO.StockQuantity;
+        product.IsActive = productDTO.IsActive;
+        product.CategoryId = productDTO.CategoryId;
 
         await dbContext.SaveChangesAsync();
         
