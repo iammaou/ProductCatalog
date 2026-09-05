@@ -1,4 +1,5 @@
 using System;
+using Azure;
 using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.DTO;
@@ -16,7 +17,7 @@ public enum ProductCategoryDeleteResult
 
 public interface IProductCategoryService
 {
-    Task<List<ProductCategoryDTO>> GetAllCategoriesAsync();
+    Task<PagedResult<ProductCategoryDTO>> GetAllCategoriesAsync(int page = 1, int pageSize = 10);
     Task<ProductCategoryDTO?> GetCategoryAsync(Guid id);
     Task<ProductCategoryDTO> AddCategoryAsync(ProductCategoryDTO productCategoryDTO);
     Task<ProductCategoryDeleteResult> RemoveCategoryAsync(Guid id);
@@ -26,13 +27,28 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
 {
     private readonly ApplicationDbContext dbContext = dbContext;
 
-    public async Task<List<ProductCategoryDTO>> GetAllCategoriesAsync()
+    public async Task<PagedResult<ProductCategoryDTO>> GetAllCategoriesAsync(int page = 1, int pageSize = 10)
     {
-        var categories = await dbContext.ProductCategories.AsNoTracking().ToListAsync();
+        page = Math.Max(page, 1);
+        pageSize = Math.Clamp(pageSize, 1, 100);
+
+        var totalCount = await dbContext.ProductCategories.AsNoTracking().CountAsync();
+
+        var categories = await dbContext.ProductCategories
+            .AsNoTracking()
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
 
         var categoriesDTO = categories.Select(c => ProductCategoryMappers.ToDTO(c)).ToList();
 
-        return categoriesDTO;
+        return new PagedResult<ProductCategoryDTO>
+        {
+            Items = categoriesDTO,
+            TotalCount = totalCount,
+            Page = page,
+            PageSize = pageSize
+        };
     }
 
     public async Task<ProductCategoryDTO?> GetCategoryAsync(Guid id)
@@ -92,9 +108,9 @@ public class ProductCategoryService(ApplicationDbContext dbContext) : IProductCa
         {
             return null;
         }
-
-        productCategory.Name = productCategoryDTO.Name ?? productCategory.Name;
-        productCategory.Description = productCategoryDTO.Description ?? productCategory.Description;
+        
+        productCategory.Name = productCategoryDTO.Name;
+        productCategory.Description = productCategoryDTO.Description;
 
         await dbContext.SaveChangesAsync();
 

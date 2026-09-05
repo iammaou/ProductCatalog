@@ -4,16 +4,19 @@ using Service.Services;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
     public class ProductCategoryController(IProductCategoryService service) : ControllerBase
     {
         private readonly IProductCategoryService service = service;
 
         [HttpGet]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<IActionResult> GetAllCategories(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10
+        )
         {
-            var categories = await service.GetAllCategoriesAsync();
+            var categories = await service.GetAllCategoriesAsync(page, pageSize);
             
             return Ok(categories);
         }

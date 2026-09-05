@@ -17,16 +17,4 @@ public static class ProductCategoryMappers
             Description = productCategory.Description
         };
     }
-
-    public static ProductCategory ToEntity(this ProductCategoryDTO productCategoryDTO)
-    {
-        ArgumentNullException.ThrowIfNull(productCategoryDTO);
-
-        return new ProductCategory
-        {
-            Id = productCategoryDTO.Id,
-            Name = productCategoryDTO.Name,
-            Description = productCategoryDTO.Description
-        };
-    }
 }

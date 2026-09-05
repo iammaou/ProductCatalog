@@ -21,19 +21,4 @@ public static class ProductMappers
             CategoryId = product.CategoryId
         };
     }
-
-    public static Product ToEntity(this ProductDTO productDto)
-    {
-        ArgumentNullException.ThrowIfNull(productDto);
-
-        return new Product
-        {
-            Name = productDto.Name,
-            Price = productDto.Price,
-            StockQuantity = productDto.StockQuantity,
-            IsActive = productDto.IsActive,
-            CreatedAt = DateTime.UtcNow,
-            CategoryId = productDto.CategoryId
-        };
-    }
 }

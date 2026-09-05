@@ -38,7 +38,7 @@ public class DbSeeder
                 StockQuantity = 0,
                 IsActive = true,
                 CategoryId = categories[1].Id,
-                CreatedAt = DateTime.Now.AddDays(-5).Date
+                CreatedAt = DateTime.UtcNow.AddDays(-5).Date
             },
             new()
             {
@@ -47,7 +47,7 @@ public class DbSeeder
                 StockQuantity = 1,
                 IsActive = false,
                 CategoryId = categories[2].Id,
-                CreatedAt = DateTime.Now.AddDays(-10)
+                CreatedAt = DateTime.UtcNow.AddDays(-10)
             },
         };
 

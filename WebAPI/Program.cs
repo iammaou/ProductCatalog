@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.Services;
 using WebAPI.Handlers;
+using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,7 +30,18 @@ builder.Services.AddControllers()
             });
         };
     });
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+   c.SwaggerDoc("v1", new OpenApiInfo
+   {
+       Title = "Product Catalog API",
+       Version = "v1",
+       Description = "API for managing products and categories"
+   });
+});
+
 builder.Services.AddOpenApi();
 builder.Services.AddHealthChecks();
 
@@ -54,8 +66,14 @@ app.UseExceptionHandler();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
+{   
+    app.UseSwagger();
+    app.UseSwaggerUI(c =>
+    {
+        c.SwaggerEndpoint("/swagger/v1/swagger.json", "Product Catalog API V1");
+        c.RoutePrefix = "swagger";
+    });
+
     app.UseDeveloperExceptionPage();
 }
 

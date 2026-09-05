@@ -17,7 +17,7 @@ public class ProductServiceTests : ProductServiceTestBase
 
         var result = await service.GetAllProductsAsync(new ProductQueryParameters
         {
-            PageNumber = 1,
+            Page = 1,
             PageSize = 10
         });
 
@@ -34,7 +34,7 @@ public class ProductServiceTests : ProductServiceTestBase
 
         var result = await service.GetAllProductsAsync(new ProductQueryParameters
         {
-            PageNumber = 1, 
+            Page = 1, 
             PageSize = 10, 
             CategoryId = Category1
         });
