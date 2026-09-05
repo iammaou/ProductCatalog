@@ -1,0 +1,848 @@
+{
+  "info": {
+    "_postman_id": "01ad24ad-295f-4aaa-b06c-805b68082820",
+    "name": "ProductCatalog",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "57433257"
+  },
+  "item": [
+    {
+      "name": "GetAllProductCategories",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5195/api/productcategory/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "productcategory",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetProductCategory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// GetProductCategory - GET /api/productcategory (single, likely by query param or path)",
+              "",
+              "pm.test(\"Status code is 200 or 404\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "pm.test(\"Content-Type is application/json\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Response body is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test(\"404 response has a message or error field\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasMessage).to.be.true;",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "// GetProductCategory - GET /api/productcategory (single, likely by query param or path)\n\npm.test(\"Status code is 200 or 404\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\n});\n\npm.test(\"Response time is under 2000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n});\n\npm.test(\"Content-Type is application/json\", function () {\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body is valid JSON\", function () {\n    pm.response.to.be.json;\n});\n\nif (pm.response.code === 404) {\n    pm.test(\"404 response has a message or error field\", function () {\n        const body = pm.response.json();\n        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");\n        pm.expect(hasMessage).to.be.true;\n    });\n}",
+          "options": {
+            "raw": {
+              "language": "javascript"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/productcategory",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "productcategory"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddProductCategory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// AddProductCategory - POST /api/productcategory/",
+              "",
+              "pm.test(\"Status code is 200, 201, or 400\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "pm.test(\"Content-Type is application/json\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Response body is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    pm.test(\"Created category has an id\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        pm.expect(body).to.have.property(\"id\");",
+              "        pm.expect(body.id).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Created category has a name\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.have.property(\"name\");",
+              "        pm.expect(body.name).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Store created category id in environment\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.id) {",
+              "            pm.environment.set(\"createdCategoryId\", body.id);",
+              "        }",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 400) {",
+              "    pm.test(\"400 response has a validation error or message\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasError = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"errors\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasError).to.be.true;",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"Name\": \"item-2\",\n    \"Description\": \"Home & Garden\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/productcategory/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "productcategory",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateProductCategory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// UpdateProductCategory - PUT /api/productcategory/{id}",
+              "",
+              "pm.test(\"Status code is 200, 204, 400, or 404\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204, 400, 404]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test(\"Content-Type is application/json\", function () {",
+              "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "    });",
+              "",
+              "    pm.test(\"Response body is valid JSON\", function () {",
+              "        pm.response.to.be.json;",
+              "    });",
+              "",
+              "    pm.test(\"Updated category has an id\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        pm.expect(body).to.have.property(\"id\");",
+              "        pm.expect(body.id).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Updated category has a name\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.have.property(\"name\");",
+              "        pm.expect(body.name).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 204) {",
+              "    pm.test(\"204 No Content - body is empty\", function () {",
+              "        pm.expect(pm.response.text()).to.be.empty;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test(\"404 response has a message or error field\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasMessage).to.be.true;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 400) {",
+              "    pm.test(\"400 response has a validation error or message\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasError = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"errors\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasError).to.be.true;",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"Name\": \"item-2\",\n    \"Description\": \"item-2\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/productcategory/72893ada-3ea3-49b0-9730-08df0a44eef2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "productcategory",
+            "72893ada-3ea3-49b0-9730-08df0a44eef2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteProductCategory",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// DeleteProductCategory - DELETE /api/productcategory/{id}",
+              "",
+              "pm.test(\"Status code is 200, 204, or 404\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204, 404]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test(\"Content-Type is application/json\", function () {",
+              "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "    });",
+              "",
+              "    pm.test(\"Response body is valid JSON\", function () {",
+              "        pm.response.to.be.json;",
+              "    });",
+              "",
+              "    pm.test(\"Success response has expected structure\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        // Accept either a deleted entity echo or a success message",
+              "        const hasIdOrMessage = body.hasOwnProperty(\"id\") || body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"success\");",
+              "        pm.expect(hasIdOrMessage).to.be.true;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 204) {",
+              "    pm.test(\"204 No Content - body is empty\", function () {",
+              "        pm.expect(pm.response.text()).to.be.empty;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test(\"404 response has a message or error field\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasMessage).to.be.true;",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:5195/api/productcategory/72893ada-3ea3-49b0-9730-08df0a44eef2",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "productcategory",
+            "72893ada-3ea3-49b0-9730-08df0a44eef2"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetAllProducts",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// GetAllProducts - GET /api/product/",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "pm.test(\"Content-Type is application/json\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Response body is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "pm.test(\"Each product has expected fields\", function () {",
+              "    const body = pm.response.json();",
+              "    if (body.length > 0) {",
+              "        body.forEach(function (product) {",
+              "            pm.expect(product).to.be.an(\"object\");",
+              "            pm.expect(product).to.have.property(\"id\");",
+              "            pm.expect(product).to.have.property(\"name\");",
+              "        });",
+              "    }",
+              "});",
+              "",
+              "pm.test(\"Product id fields are non-empty strings\", function () {",
+              "    const body = pm.response.json();",
+              "    if (body.length > 0) {",
+              "        body.forEach(function (product) {",
+              "            pm.expect(product.id).to.be.a(\"string\").and.not.empty;",
+              "        });",
+              "    }",
+              "});",
+              "",
+              "pm.test(\"Product price is a non-negative number if present\", function () {",
+              "    const body = pm.response.json();",
+              "    if (body.length > 0 && body[0].hasOwnProperty(\"price\")) {",
+              "        body.forEach(function (product) {",
+              "            pm.expect(product.price).to.be.a(\"number\");",
+              "            pm.expect(product.price).to.be.at.least(0);",
+              "        });",
+              "    }",
+              "});",
+              "",
+              "pm.test(\"Product isActive is a boolean if present\", function () {",
+              "    const body = pm.response.json();",
+              "    if (body.length > 0 && body[0].hasOwnProperty(\"isActive\")) {",
+              "        body.forEach(function (product) {",
+              "            pm.expect(product.isActive).to.be.a(\"boolean\");",
+              "        });",
+              "    }",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "// GetAllProducts - GET /api/product/\n\npm.test(\"Status code is 200\", function () {\n    pm.response.to.have.status(200);\n});\n\npm.test(\"Response time is under 2000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n});\n\npm.test(\"Content-Type is application/json\", function () {\n    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\n});\n\npm.test(\"Response body is valid JSON\", function () {\n    pm.response.to.be.json;\n});\n\npm.test(\"Each product has expected fields\", function () {\n    const body = pm.response.json();\n    if (body.length > 0) {\n        body.forEach(function (product) {\n            pm.expect(product).to.be.an(\"object\");\n            pm.expect(product).to.have.property(\"id\");\n            pm.expect(product).to.have.property(\"name\");\n        });\n    }\n});\n\npm.test(\"Product id fields are non-empty strings\", function () {\n    const body = pm.response.json();\n    if (body.length > 0) {\n        body.forEach(function (product) {\n            pm.expect(product.id).to.be.a(\"string\").and.not.empty;\n        });\n    }\n});\n\npm.test(\"Product price is a non-negative number if present\", function () {\n    const body = pm.response.json();\n    if (body.length > 0 && body[0].hasOwnProperty(\"price\")) {\n        body.forEach(function (product) {\n            pm.expect(product.price).to.be.a(\"number\");\n            pm.expect(product.price).to.be.at.least(0);\n        });\n    }\n});\n\npm.test(\"Product isActive is a boolean if present\", function () {\n    const body = pm.response.json();\n    if (body.length > 0 && body[0].hasOwnProperty(\"isActive\")) {\n        body.forEach(function (product) {\n            pm.expect(product.isActive).to.be.a(\"boolean\");\n        });\n    }\n});",
+          "options": {
+            "raw": {
+              "language": "javascript"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/product/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "product",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetProduct",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// GetProduct - GET /api/product/{id}",
+              "",
+              "pm.test(\"Status code is 200 or 404\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 404]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "pm.test(\"Response body is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test(\"Response is an object with expected fields\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        pm.expect(body).to.have.property(\"id\");",
+              "        pm.expect(body).to.have.property(\"name\");",
+              "    });",
+              "",
+              "    pm.test(\"Product id is a non-empty string\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body.id).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Product name is a non-empty string\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body.name).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Product price is a non-negative number\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"price\")) {",
+              "            pm.expect(body.price).to.be.a(\"number\");",
+              "            pm.expect(body.price).to.be.at.least(0);",
+              "        }",
+              "    });",
+              "",
+              "    pm.test(\"Product stockQuantity is a non-negative number if present\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"stockQuantity\")) {",
+              "            pm.expect(body.stockQuantity).to.be.a(\"number\");",
+              "            pm.expect(body.stockQuantity).to.be.at.least(0);",
+              "        }",
+              "    });",
+              "",
+              "    pm.test(\"Product isActive is a boolean if present\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"isActive\")) {",
+              "            pm.expect(body.isActive).to.be.a(\"boolean\");",
+              "        }",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test(\"404 response has a message or error field\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasMessage).to.be.true;",
+              "    });",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "// GetProduct - GET /api/product/{id}\n\npm.test(\"Status code is 200 or 404\", function () {\n    pm.expect(pm.response.code).to.be.oneOf([200, 404]);\n});\n\npm.test(\"Response time is under 2000ms\", function () {\n    pm.expect(pm.response.responseTime).to.be.below(2000);\n});\n\npm.test(\"Response body is valid JSON\", function () {\n    pm.response.to.be.json;\n});\n\nif (pm.response.code === 200) {\n    pm.test(\"Response is an object with expected fields\", function () {\n        const body = pm.response.json();\n        pm.expect(body).to.be.an(\"object\");\n        pm.expect(body).to.have.property(\"id\");\n        pm.expect(body).to.have.property(\"name\");\n    });\n\n    pm.test(\"Product id is a non-empty string\", function () {\n        const body = pm.response.json();\n        pm.expect(body.id).to.be.a(\"string\").and.not.empty;\n    });\n\n    pm.test(\"Product name is a non-empty string\", function () {\n        const body = pm.response.json();\n        pm.expect(body.name).to.be.a(\"string\").and.not.empty;\n    });\n\n    pm.test(\"Product price is a non-negative number\", function () {\n        const body = pm.response.json();\n        if (body.hasOwnProperty(\"price\")) {\n            pm.expect(body.price).to.be.a(\"number\");\n            pm.expect(body.price).to.be.at.least(0);\n        }\n    });\n\n    pm.test(\"Product stockQuantity is a non-negative number if present\", function () {\n        const body = pm.response.json();\n        if (body.hasOwnProperty(\"stockQuantity\")) {\n            pm.expect(body.stockQuantity).to.be.a(\"number\");\n            pm.expect(body.stockQuantity).to.be.at.least(0);\n        }\n    });\n\n    pm.test(\"Product isActive is a boolean if present\", function () {\n        const body = pm.response.json();\n        if (body.hasOwnProperty(\"isActive\")) {\n            pm.expect(body.isActive).to.be.a(\"boolean\");\n        }\n    });\n}\n\nif (pm.response.code === 404) {\n    pm.test(\"404 response has a message or error field\", function () {\n        const body = pm.response.json();\n        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");\n        pm.expect(hasMessage).to.be.true;\n    });\n}",
+          "options": {
+            "raw": {
+              "language": "javascript"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/product/2ef40bc9-dc20-434d-45c4-08df0a454267",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "product",
+            "2ef40bc9-dc20-434d-45c4-08df0a454267"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "AddProduct",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// AddProduct - POST /api/product/",
+              "",
+              "pm.test(\"Status code is 200, 201, or 400\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 400]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "pm.test(\"Content-Type is application/json\", function () {",
+              "    pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "});",
+              "",
+              "pm.test(\"Response body is valid JSON\", function () {",
+              "    pm.response.to.be.json;",
+              "});",
+              "",
+              "if (pm.response.code === 200 || pm.response.code === 201) {",
+              "    pm.test(\"Created product has an id\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        pm.expect(body).to.have.property(\"id\");",
+              "        pm.expect(body.id).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Created product has a name\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.have.property(\"name\");",
+              "        pm.expect(body.name).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Created product price is a non-negative number if present\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"price\")) {",
+              "            pm.expect(body.price).to.be.a(\"number\");",
+              "            pm.expect(body.price).to.be.at.least(0);",
+              "        }",
+              "    });",
+              "",
+              "    pm.test(\"Created product isActive is a boolean if present\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"isActive\")) {",
+              "            pm.expect(body.isActive).to.be.a(\"boolean\");",
+              "        }",
+              "    });",
+              "",
+              "    pm.test(\"Store created product id in environment\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.id) {",
+              "            pm.environment.set(\"createdProductId\", body.id);",
+              "        }",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 400) {",
+              "    pm.test(\"400 response has a validation error or message\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasError = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"errors\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasError).to.be.true;",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"Name\": \"Item\",\n    \"Price\": 1.5,\n    \"StockQuantity\": 3,\n    \"IsActive\": true,\n    \"CategoryId\": \"024f931c-9586-430e-e38f-08df0a4370fd\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/product/",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "product",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateProduct",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// UpdateProduct - PUT /api/product/{id}",
+              "",
+              "pm.test(\"Status code is 200, 204, 400, or 404\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204, 400, 404]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test(\"Content-Type is application/json\", function () {",
+              "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "    });",
+              "",
+              "    pm.test(\"Response body is valid JSON\", function () {",
+              "        pm.response.to.be.json;",
+              "    });",
+              "",
+              "    pm.test(\"Updated product has an id\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        pm.expect(body).to.have.property(\"id\");",
+              "        pm.expect(body.id).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Updated product has a name\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.have.property(\"name\");",
+              "        pm.expect(body.name).to.be.a(\"string\").and.not.empty;",
+              "    });",
+              "",
+              "    pm.test(\"Updated product price is a non-negative number if present\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"price\")) {",
+              "            pm.expect(body.price).to.be.a(\"number\");",
+              "            pm.expect(body.price).to.be.at.least(0);",
+              "        }",
+              "    });",
+              "",
+              "    pm.test(\"Updated product isActive is a boolean if present\", function () {",
+              "        const body = pm.response.json();",
+              "        if (body.hasOwnProperty(\"isActive\")) {",
+              "            pm.expect(body.isActive).to.be.a(\"boolean\");",
+              "        }",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 204) {",
+              "    pm.test(\"204 No Content - body is empty\", function () {",
+              "        pm.expect(pm.response.text()).to.be.empty;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test(\"404 response has a message or error field\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasMessage).to.be.true;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 400) {",
+              "    pm.test(\"400 response has a validation error or message\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasError = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"errors\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasError).to.be.true;",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"name\": \"Item edited\",\n    \"price\": 1.50,\n    \"stockQuantity\": 3,\n    \"isActive\": true,\n    \"categoryId\": \"024f931c-9586-430e-e38f-08df0a4370fd\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/product/2ef40bc9-dc20-434d-45c4-08df0a454267",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "product",
+            "2ef40bc9-dc20-434d-45c4-08df0a454267"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteProduct",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "// DeleteProduct - DELETE /api/product/{id}",
+              "",
+              "pm.test(\"Status code is 200, 204, or 404\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 204, 404]);",
+              "});",
+              "",
+              "pm.test(\"Response time is under 2000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(2000);",
+              "});",
+              "",
+              "if (pm.response.code === 200) {",
+              "    pm.test(\"Content-Type is application/json\", function () {",
+              "        pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");",
+              "    });",
+              "",
+              "    pm.test(\"Response body is valid JSON\", function () {",
+              "        pm.response.to.be.json;",
+              "    });",
+              "",
+              "    pm.test(\"Success response has expected structure\", function () {",
+              "        const body = pm.response.json();",
+              "        pm.expect(body).to.be.an(\"object\");",
+              "        const hasIdOrMessage = body.hasOwnProperty(\"id\") || body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"success\");",
+              "        pm.expect(hasIdOrMessage).to.be.true;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 204) {",
+              "    pm.test(\"204 No Content - body is empty\", function () {",
+              "        pm.expect(pm.response.text()).to.be.empty;",
+              "    });",
+              "}",
+              "",
+              "if (pm.response.code === 404) {",
+              "    pm.test(\"404 response has a message or error field\", function () {",
+              "        const body = pm.response.json();",
+              "        const hasMessage = body.hasOwnProperty(\"message\") || body.hasOwnProperty(\"error\") || body.hasOwnProperty(\"title\");",
+              "        pm.expect(hasMessage).to.be.true;",
+              "    });",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"Name\": \"edited item\",\n    \"Price\": 3,\n    \"StockQuantity\": 6,\n    \"IsActive\": false,\n    \"CategoryId\": \"eeb24392-3ae2-4f7f-a007-08df01ed1baf\"\n}"
+        },
+        "url": {
+          "raw": "http://localhost:5195/api/product/2ef40bc9-dc20-434d-45c4-08df0a454267",
+          "protocol": "http",
+          "host": [
+            "localhost"
+          ],
+          "port": "5195",
+          "path": [
+            "api",
+            "product",
+            "2ef40bc9-dc20-434d-45c4-08df0a454267"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}

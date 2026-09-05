@@ -1,4 +1,3 @@
-using System;
 using Service.Data;
 using Service.Entities;
 using Tests.Helpers;

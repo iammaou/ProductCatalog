@@ -1,5 +1,3 @@
-using System;
-using Azure;
 using Microsoft.EntityFrameworkCore;
 using Service.Data;
 using Service.DTO;

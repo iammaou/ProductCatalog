@@ -1,5 +1,3 @@
-using System;
-
 namespace WebAPI.DTO;
 
 public class ErrorResponse

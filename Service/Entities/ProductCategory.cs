@@ -1,5 +1,3 @@
-using System;
-
 namespace Service.Entities;
 
 public class ProductCategory

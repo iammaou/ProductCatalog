@@ -1,4 +1,3 @@
-using System;
 using Service.DTO;
 using Service.Services;
 using Tests.Fixures;

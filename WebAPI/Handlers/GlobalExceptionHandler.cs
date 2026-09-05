@@ -1,6 +1,5 @@
 // Create a new file: WebAPI/Handlers/GlobalExceptionHandler.cs
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.AspNetCore.Mvc;
 using WebAPI.DTO;
 
 namespace WebAPI.Handlers;
