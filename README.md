@@ -53,8 +53,8 @@ The API targets the .NET 9 SDK and expects SQL Server 2022 via Docker Compose. T
 1. **Clone the Repository**
 
    ```bash
-   git clone git@github.com:iammaou/ProductCatalog.git
-   cd ProductCatalog
+   git clone git@github.com:iammaou/Product-and-Category-Management-API.git
+   cd Product-and-Category-Management-API
    ```
 
 2. **Start SQL Server in Docker**
